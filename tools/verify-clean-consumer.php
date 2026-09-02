@@ -137,6 +137,15 @@ if (!is_file($package . '/composer.json')) {
 }
 
 consumerRun([PHP_BINARY, $root . '/tools/verify-archive.php', $package], $workspace);
+$fileCount = 0;
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($package, FilesystemIterator::SKIP_DOTS),
+);
+foreach ($iterator as $entry) {
+    if ($entry instanceof SplFileInfo && $entry->isFile()) {
+        $fileCount++;
+    }
+}
 consumerRun(['composer', '--working-dir=' . $package, 'validate', '--strict'], $workspace);
 consumerRun(
     [
@@ -172,15 +181,6 @@ foreach (array_keys($symbols) as $symbol) {
     }
 }
 
-$fileCount = 0;
-$iterator = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($package, FilesystemIterator::SKIP_DOTS),
-);
-foreach ($iterator as $entry) {
-    if ($entry instanceof SplFileInfo && $entry->isFile() && !str_contains($entry->getPathname(), '/vendor/')) {
-        $fileCount++;
-    }
-}
 consumerRemove($workspace);
 
 echo sprintf(
