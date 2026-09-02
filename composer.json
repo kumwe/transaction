@@ -1,0 +1,63 @@
+{
+  "name": "kumwe/transaction",
+  "description": "The storage-neutral transaction port of the Kumwe family; hosts bind their own adapter.",
+  "type": "library",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kumwe/transaction",
+  "support": {
+    "issues": "https://github.com/kumwe/transaction/issues",
+    "source": "https://github.com/kumwe/transaction"
+  },
+  "require": {
+    "php": "^8.5"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpstan/phpstan-strict-rules": "^2.0",
+    "squizlabs/php_codesniffer": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kumwe\\Transaction\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Kumwe\\Transaction\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "composer:validate": "composer validate --strict",
+    "lint": "php tools/lint.php",
+    "docs": "php tools/check-docblocks.php",
+    "architecture": "php tools/verify-architecture.php",
+    "manifests": "php tools/verify-manifests.php",
+    "manifests:record": "php tools/verify-manifests.php --write",
+    "autoload:smoke": "php resources/toolchain/autoload-smoke.php",
+    "examples": "php examples/typed-consumer.php",
+    "cs": "phpcs -q",
+    "cs:fix": "phpcbf",
+    "analyse": "phpstan analyse --no-progress --memory-limit=1G",
+    "test": "php tests/run.php",
+    "clean-consumer": "php tools/verify-clean-consumer.php",
+    "check": [
+      "@composer:validate",
+      "@lint",
+      "@docs",
+      "@architecture",
+      "@manifests",
+      "@autoload:smoke",
+      "@examples",
+      "@cs",
+      "@analyse",
+      "@test",
+      "@clean-consumer"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

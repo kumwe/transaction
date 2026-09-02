@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<ruleset name="Kumwe Transaction">
+    <description>Kumwe Transaction coding standard: PSR-12 with a hard 120-column limit.</description>
+    <file>src</file>
+    <file>tests</file>
+    <file>tools</file>
+    <file>examples</file>
+    <file>resources/toolchain</file>
+    <arg name="basepath" value="."/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <rule ref="PSR12"/>
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>tools/*</exclude-pattern>
+        <exclude-pattern>examples/*</exclude-pattern>
+        <exclude-pattern>resources/toolchain/*</exclude-pattern>
+        <exclude-pattern>tests/run.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="120"/>
+        </properties>
+    </rule>
+</ruleset>

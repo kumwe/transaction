@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+# The Kumwe App adoption gate reads CHARTER.md, README.md, CHANGELOG.md, MIGRATION-HANDOFF.md, docs/,
+# resources/ and src/ from the release archive, and the clean-consumer gate runs examples/ from it; none of
+# them may be export-ignored. Only development state stays out of the archive.
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/.phpstan.cache export-ignore
+/composer.lock export-ignore
+/dist export-ignore
+/phpcs.xml export-ignore
+/phpstan.neon export-ignore
+/tests export-ignore
+/tools export-ignore
+/vendor export-ignore
