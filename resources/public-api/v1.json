@@ -1,0 +1,150 @@
+{
+    "schema": "kumwe-package-public-api/v1",
+    "package": "kumwe/transaction",
+    "release": "0.1.0",
+    "namespace": "Kumwe\\Transaction\\",
+    "symbols": {
+        "Kumwe\\Transaction\\Contract\\TransactionManager": {
+            "kind": "interface",
+            "stability": "stable",
+            "file": "src/Contract/TransactionManager.php",
+            "abstract": false,
+            "final": false,
+            "readonly": false,
+            "parent": null,
+            "interfaces": [],
+            "constants": {},
+            "properties": {},
+            "methods": {
+                "afterCommit": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "void"
+                },
+                "afterRollback": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "void"
+                },
+                "transactional": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "mixed"
+                }
+            },
+            "deprecated": null
+        },
+        "Kumwe\\Transaction\\Contract\\TransactionState": {
+            "kind": "interface",
+            "stability": "stable",
+            "file": "src/Contract/TransactionState.php",
+            "abstract": false,
+            "final": false,
+            "readonly": false,
+            "parent": null,
+            "interfaces": [],
+            "constants": {},
+            "properties": {},
+            "methods": {
+                "isActive": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [],
+                    "return": "bool"
+                }
+            },
+            "deprecated": null
+        },
+        "Kumwe\\Transaction\\Testing\\ImmediateTransactionManager": {
+            "kind": "class",
+            "stability": "stable",
+            "file": "src/Testing/ImmediateTransactionManager.php",
+            "abstract": false,
+            "final": true,
+            "readonly": true,
+            "parent": null,
+            "interfaces": [
+                "Kumwe\\Transaction\\Contract\\TransactionManager"
+            ],
+            "constants": {},
+            "properties": {},
+            "methods": {
+                "afterCommit": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "void"
+                },
+                "afterRollback": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "void"
+                },
+                "transactional": {
+                    "visibility": "public",
+                    "static": false,
+                    "parameters": [
+                        {
+                            "name": "operation",
+                            "type": "callable",
+                            "optional": false,
+                            "variadic": false,
+                            "by_reference": false
+                        }
+                    ],
+                    "return": "mixed"
+                }
+            },
+            "deprecated": null
+        }
+    },
+    "extension_points": [
+        "Kumwe\\Transaction\\Contract\\TransactionManager",
+        "Kumwe\\Transaction\\Contract\\TransactionState"
+    ],
+    "digest_of": "src"
+}

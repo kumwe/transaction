@@ -1,0 +1,54 @@
+{
+  "schema": "kumwe-package-capabilities/v1",
+  "package": "kumwe/transaction",
+  "release": "0.1.0",
+  "namespace": "Kumwe\\Transaction\\",
+  "responsibility": "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view.",
+  "non_responsibilities": [
+    "Any transaction implementation: driver adapters, connections, savepoints and isolation levels stay in the host.",
+    "Nested-transaction, retry, deadlock and timeout policy.",
+    "Logging, audit, outbox and event coordination around a transaction.",
+    "Container registration: the host binds its adapter to the contract identifiers; there is no provider.",
+    "Real-database evidence, which the host proves on the engines it supports."
+  ],
+  "capabilities": [
+    {
+      "id": "transaction.boundary",
+      "title": "Atomic operation boundary with settlement hooks",
+      "description": "Atomic scopes with invisible nesting and hooks for the outermost commit or a discarded scope.",
+      "symbols": [
+        "Kumwe\\Transaction\\Contract\\TransactionManager"
+      ],
+      "documentation": [
+        "docs/public-api.md",
+        "docs/integration.md"
+      ]
+    },
+    {
+      "id": "transaction.state",
+      "title": "Transaction activity view",
+      "description": "Whether any transaction scope, however nested and whoever opened it, is open on the connection.",
+      "symbols": [
+        "Kumwe\\Transaction\\Contract\\TransactionState"
+      ],
+      "documentation": [
+        "docs/public-api.md",
+        "docs/integration.md"
+      ]
+    },
+    {
+      "id": "transaction.testing",
+      "title": "Consumer test-suite double",
+      "description": "Inline, non-durable manager for consumer test suites only; never a production implementation.",
+      "symbols": [
+        "Kumwe\\Transaction\\Testing\\ImmediateTransactionManager"
+      ],
+      "documentation": [
+        "docs/public-api.md",
+        "docs/integration.md"
+      ]
+    }
+  ],
+  "native_requirements": null,
+  "deprecations": []
+}
