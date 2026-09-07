@@ -1,0 +1,77 @@
+{
+  "schema": "kumwe-test-ownership/v1",
+  "package": "kumwe/transaction",
+  "api_manifest": "resources/public-api/v1.json",
+  "suite": {
+    "inventory_command": [
+      "php",
+      "tests/run.php",
+      "--list-json"
+    ]
+  },
+  "exports": {
+    "Kumwe\\Transaction\\Contract\\TransactionManager": {
+      "behavior": [
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
+      ],
+      "boundary": [
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+      ],
+      "note": "The package owns the port contract; listed cases exercise its signature or consumer path. Concrete host adapter behavior remains with its implementing repository."
+    },
+    "Kumwe\\Transaction\\Contract\\TransactionState": {
+      "behavior": [
+        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePortIsAnInterfaceWithOneBooleanQuery",
+        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
+      ],
+      "boundary": [
+        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
+      ],
+      "note": "The package owns the port contract; listed cases exercise its signature or consumer path. Concrete host adapter behavior remains with its implementing repository."
+    },
+    "Kumwe\\Transaction\\Testing\\ImmediateTransactionManager": {
+      "behavior": [
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
+      ],
+      "boundary": [
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+      ]
+    }
+  },
+  "conformance": {
+    "status": "not-applicable",
+    "rationale": "The package owns a storage-neutral port and an immediate test double, not an algorithmic semantic corpus; their executable contract cases are mapped per export.",
+    "tests": [],
+    "corpora": []
+  },
+  "architecture": [
+    "tools/verify-architecture.php"
+  ],
+  "host": {
+    "repository": "kumwe/app",
+    "baseline": "960ce8ec00cf724a7cae03e5ba09c4852c9ab54e",
+    "transfers": [
+      {
+        "source_test": "tests/Architecture/TransactionSeamBoundaryTest.php",
+        "action": "split-on-adoption",
+        "package_tests": [
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRunsAtOnceInsideAndOutsideAScope",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testARollbackHookIsAlwaysDiscarded",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testNestedCallsRunInlineAndReturnTheirOwnValues",
+          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+        ],
+        "retained": "Keep App adapter/composition checks and database transaction behavior."
+      }
+    ],
+    "retained_responsibilities": [
+      "Doctrine transactions, nesting/retry/deadlock policy, database matrix, outbox/audit and application composition."
+    ]
+  }
+}
