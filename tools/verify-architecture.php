@@ -79,7 +79,10 @@ foreach ($files as $path) {
             continue;
         }
         [$id, $text, $line] = $token;
-        if ($id === T_STRING && in_array(strtolower($text), $runtimeSelection, true)) {
+        if (
+            in_array($id, [T_STRING, T_NAME_FULLY_QUALIFIED], true)
+            && in_array(strtolower(ltrim($text, '\\')), $runtimeSelection, true)
+        ) {
             $errors[] = sprintf('%s:%d selects behaviour at runtime through %s().', $relative, $line, $text);
             continue;
         }

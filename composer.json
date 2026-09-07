@@ -50,6 +50,7 @@
       "@lint",
       "@docs",
       "@architecture",
+      "@boundary:tokens",
       "@manifests",
       "@autoload:smoke",
       "@examples",
@@ -57,9 +58,12 @@
       "@analyse",
       "@test:ownership",
       "@test",
-      "@clean-consumer"
+      "@clean-consumer",
+      "@release:integrity"
     ],
-    "test:ownership": "php tools/verify-test-ownership.php --self-test"
+    "test:ownership": "php tools/verify-test-ownership.php --self-test",
+    "release:integrity": "bash tools/test-release-integrity.sh",
+    "boundary:tokens": "php tools/verify-boundary-tokens.php --self-test"
   },
   "config": {
     "sort-packages": true
