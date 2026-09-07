@@ -1,25 +1,23 @@
 # Releasing the transaction package
 
-The package versions independently under semantic versioning; alignment with a consumer travels through
-that consumer's exact pin, never through matching version numbers.
+Follow the [Package release standard](package-release-standard.md) for the shared
+quality gate, changelog parsing, publication and retry behavior. Complete the
+[repository release setup](repository-release-setup.md) with an administrator
+session before merging a release record:
 
-Releasing is merging. Every Kumwe PHP library delivers the same way:
+```bash
+bash tools/configure-release-repositories.sh --check kumwe/transaction
+bash tools/configure-release-repositories.sh --apply kumwe/transaction
+```
 
-1. Land the work on `main` with its `CHANGELOG.md` section for the version — the newest heading
-   `## X.Y.Z` is the release record. Future work stays under `## Unreleased`, which the automation skips.
-2. The `Release on record` workflow runs on every push to `main`: it installs the validated development
-   toolchain, re-proves the complete check lane on the pushed commit, reads the newest recorded version,
-   and identifies the release that commit represents. When the version has no tag yet it creates `vX.Y.Z`
-   at that exact commit through the repository API and publishes the GitHub release. When the tag already
-   exists it must resolve to a commit in the pushed `main` history whose newest changelog record is that
-   same version, or the run fails. Nobody pushes or moves a tag by hand; a push that records no new version
-   is a verification-only run. Runs are serialized so two pushes cannot race past the tag check.
-3. Packagist follows tags through its GitHub integration — the maintainer submits `kumwe/transaction`
-   once at packagist.org and every later release appears without a credential in this repository.
+The required CI check is **Package gate**. Maintainers rebase reviewed PRs into the
+repository's current default branch; the release workflow reruns the same quality
+gate on the resulting commit and derives its release identity from that run.
+A release intention in CHANGELOG.md is not evidence that publication occurred.
+Keep work that is not ready for publication under `## Unreleased`.
 
-The agent that prepares a release opens a pull request and stops. The human merge is the release trigger.
-A Version 2 release is not consumable until a separate verification session has independently checked the
-published artifact and produced its external release attestation.
+The package versions independently under semantic versioning; alignment with a
+consumer travels through its exact pin, never through matching version numbers.
 
 ## Version policy
 
@@ -45,7 +43,7 @@ stray or a missing file; the archive is not release-ready without the handoff.
 
 ## Clean-consumer verification
 
-`composer clean-consumer` (the last step of `composer check`) builds the archive from the checkout,
+`composer clean-consumer` (part of `composer check`) builds the archive from the checkout,
 extracts it, verifies the file set, validates the archived Composer metadata, and installs that exact ZIP
 as a dependency of a fresh Composer project with `--no-dev --classmap-authoritative --no-plugins --no-scripts`.
 The local package repository points only at the built ZIP, and Packagist is disabled for this dependency-free
@@ -55,14 +53,9 @@ CI repeats the no-dev
 proof in the checkout as well. Unit tests in the package checkout do not replace this gate, because the
 development toolchain can conceal a broken consumer artifact.
 
-`composer check` also runs `composer audit --abandoned=fail` and twelve executable changelog parser
+`composer check` also runs `composer audit --abandoned=fail` and executable changelog parser
 regressions. The same parser reads the pushed commit and existing tag, including an optional Unreleased
 section; a malformed newest release never falls through to an older version.
-
-Running the lane on a PHP older than the declared `^8.5` range (for a local check only) requires
-`composer install --ignore-platform-req=php` and, for the archive install inside the gate,
-`KUMWE_CLEAN_CONSUMER_COMPOSER_ARGS=--ignore-platform-req=php`. CI never sets either; it runs the real
-supported version.
 
 ## Rollback and advisories
 
@@ -74,3 +67,20 @@ follows [`security.md`](security.md). A consumer rolls back by re-pinning the pr
 
 Supported platform: PHP `^8.5`, no extension, no Composer dependency. CI proves every supported PHP
 version with fail-fast disabled; the declared range is the tested range, never wider.
+
+## Publication evidence and recovery
+
+The maintainer performs the initial Packagist submission. Its GitHub integration
+then follows tags without a registry credential in CI. Before dependent publication
+or App adoption, a fresh independent verifier must bind the exact published
+source/tag, archive digest, manifests, registry coordinate, license/security and
+clean-consumer results in an external RELEASE-ATTESTATION.yaml. The artifact and
+handoff must not invent their own final commit, checksum or publication evidence.
+
+Use the current release workflow on the default branch to retry after correcting
+repository settings. Historical mutable releases remain unchanged: enabling
+immutability affects future publications, so a mutable version requires an unused
+successor. Never move or delete a published tag or replace a released artifact.
+An unpublished tag can be completed only on the exact commit tested by the retry.
+A green PR does not replace the default-branch release result or independent
+verification. Administrator credentials do not belong in Actions.
