@@ -7,49 +7,51 @@
       "php",
       "tests/run.php",
       "--list-json"
-    ]
+    ],
+    "namespace_prefix": "Kumwe\\Transaction\\Tests\\"
   },
   "exports": {
     "Kumwe\\Transaction\\Contract\\TransactionManager": {
       "behavior": [
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
+        "Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+        "Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
       ],
       "boundary": [
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+        "Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+        "Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
       ],
-      "note": "The package owns the port contract; listed cases exercise its signature or consumer path. Concrete host adapter behavior remains with its implementing repository."
+      "note": "Owns port signature/consumer contract; concrete adapters own their implementation behavior."
     },
     "Kumwe\\Transaction\\Contract\\TransactionState": {
       "behavior": [
-        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePortIsAnInterfaceWithOneBooleanQuery",
-        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
+        "Case\\TransactionStateContractTest::testThePortIsAnInterfaceWithOneBooleanQuery",
+        "Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
       ],
       "boundary": [
-        "Kumwe\\Transaction\\Tests\\Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
+        "Case\\TransactionStateContractTest::testThePromiseCoversEveryNestingLevelAndEveryRoute"
       ],
-      "note": "The package owns the port contract; listed cases exercise its signature or consumer path. Concrete host adapter behavior remains with its implementing repository."
+      "note": "Owns port signature/consumer contract; concrete adapters own their implementation behavior."
     },
     "Kumwe\\Transaction\\Testing\\ImmediateTransactionManager": {
       "behavior": [
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
+        "Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+        "Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged"
       ],
       "boundary": [
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
-        "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+        "Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+        "Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
       ]
     }
   },
   "conformance": {
     "status": "not-applicable",
-    "rationale": "The package owns a storage-neutral port and an immediate test double, not an algorithmic semantic corpus; their executable contract cases are mapped per export.",
+    "rationale": "Ports and the immediate test double own contract cases; no algorithmic corpus applies.",
     "tests": [],
     "corpora": []
   },
   "architecture": [
-    "tools/verify-architecture.php"
+    "tools/verify-architecture.php",
+    "tools/verify-boundary-tokens.php"
   ],
   "host": {
     "repository": "kumwe/app",
@@ -59,13 +61,13 @@
         "source_test": "tests/Architecture/TransactionSeamBoundaryTest.php",
         "action": "split-on-adoption",
         "package_tests": [
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRunsAtOnceInsideAndOutsideAScope",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testARollbackHookIsAlwaysDiscarded",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testNestedCallsRunInlineAndReturnTheirOwnValues",
-          "Kumwe\\Transaction\\Tests\\Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
+          "Case\\ImmediateTransactionManagerTest::testItIsTheFinalReadonlyStatelessDoubleOfThePort",
+          "Case\\ImmediateTransactionManagerTest::testTheOperationResultIsReturnedUnchanged",
+          "Case\\ImmediateTransactionManagerTest::testAFailureReachesTheCallerAsTheSameInstance",
+          "Case\\ImmediateTransactionManagerTest::testACommitHookRunsAtOnceInsideAndOutsideAScope",
+          "Case\\ImmediateTransactionManagerTest::testARollbackHookIsAlwaysDiscarded",
+          "Case\\ImmediateTransactionManagerTest::testNestedCallsRunInlineAndReturnTheirOwnValues",
+          "Case\\ImmediateTransactionManagerTest::testACommitHookRegisteredBeforeAFailureHasAlreadyRun"
         ],
         "retained": "Keep App adapter/composition checks and database transaction behavior."
       }
