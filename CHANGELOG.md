@@ -4,6 +4,20 @@ Delivered package changes, newest first. A change is recorded here only after it
 clean clone. The newest `## X.Y.Z` heading is the release record: a merge to `main` that carries it is the
 release, published by the `Release on record` workflow ([`docs/releasing.md`](docs/releasing.md)).
 
+## 0.1.1
+
+- **Prove the archive as a dependency.** Install the actual built ZIP into a new no-dev Composer consumer,
+  verify its installed files and authoritative classmap, and run the shipped example and smoke through
+  the consumer autoloader. No path repository, source fallback or development toolchain participates.
+- **Consistent release verification.** Use one tested parser for pushed and tagged changelogs, including
+  Unreleased sections. Reject malformed brackets and leading-zero versions. Include security audit and
+  twelve parser regressions in the single `composer check` entry point.
+- **Extraction audit.** The two ports and explicitly scoped consumer test double retain their production
+  signatures and behavior. Compared the extracted App paths from the handoff baseline
+  `6f9e42cb59a84ba3ca523a70475cf4d7263c68e7` through
+  `960ce8ec00cf724a7cae03e5ba09c4852c9ab54e`: no source drift.
+  Real transaction adapters, nesting, rollback, coordination and database proof remain host responsibilities.
+
 ## 0.1.0
 
 - **The storage-neutral transaction port.** Extracted from Kumwe App as a drop-in replacement:

@@ -46,11 +46,18 @@ stray or a missing file; the archive is not release-ready without the handoff.
 ## Clean-consumer verification
 
 `composer clean-consumer` (the last step of `composer check`) builds the archive from the checkout,
-extracts it, verifies the file set, validates the archived Composer metadata, installs it with
-`--no-dev --classmap-authoritative` into its own directory, proves no development package survived, and
-runs the shipped autoload smoke and the shipped example from inside the archive. CI repeats the no-dev
+extracts it, verifies the file set, validates the archived Composer metadata, and installs that exact ZIP
+as a dependency of a fresh Composer project with `--no-dev --classmap-authoritative --no-plugins --no-scripts`.
+The local package repository points only at the built ZIP, and Packagist is disabled for this dependency-free
+package. The installed file set is checked again; no App, package test class or development dependency may
+enter the consumer classmap. The shipped smoke and example receive the consumer's autoloader explicitly.
+CI repeats the no-dev
 proof in the checkout as well. Unit tests in the package checkout do not replace this gate, because the
 development toolchain can conceal a broken consumer artifact.
+
+`composer check` also runs `composer audit --abandoned=fail` and twelve executable changelog parser
+regressions. The same parser reads the pushed commit and existing tag, including an optional Unreleased
+section; a malformed newest release never falls through to an older version.
 
 Running the lane on a PHP older than the declared `^8.5` range (for a local check only) requires
 `composer install --ignore-platform-req=php` and, for the archive install inside the gate,
