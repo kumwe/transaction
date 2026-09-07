@@ -29,7 +29,7 @@
   },
   "scripts": {
     "composer:validate": "composer validate --strict",
-    "audit": "composer audit --abandoned=fail",
+    "security:audit": "composer audit --abandoned=fail",
     "release:check": "bash tools/test-release-record.sh",
     "lint": "php tools/lint.php",
     "docs": "php tools/check-docblocks.php",
@@ -45,7 +45,7 @@
     "clean-consumer": "php tools/verify-clean-consumer.php",
     "check": [
       "@composer:validate",
-      "@audit",
+      "@security:audit",
       "@release:check",
       "@lint",
       "@docs",

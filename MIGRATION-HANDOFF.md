@@ -47,8 +47,8 @@ target:
   repository: https://github.com/kumwe/transaction
   artifact_identity: "kumwe/transaction (Composer library)"
   canonical_namespace_or_abi: Kumwe\Transaction
-  branch: phase-1/extract-transaction
-  pull_request: "https://github.com/kumwe/transaction/pull/1"
+  branch: fix/extraction-audit-20260907
+  pull_request: "https://github.com/kumwe/transaction/pull/2"
 ownership:
   responsibility: "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view."
   non_responsibilities:
@@ -62,11 +62,11 @@ ownership:
   next_consumer: kumwe/app
   public_manifests:
     - path: resources/public-api/v1.json
-      sha256: "19b82875a1bb58ab6862cf5ac22fd789acd28035113743464dd73c4131789b00"
+      sha256: "3c16bf6d850b2af58b5537bdb1ebd97d753654a0a09b2fa0ba8d1a31d44e477a"
     - path: resources/capabilities/v1.json
-      sha256: "b2230b7bf40bf0e6969c527babb4c5880759ee511053efcded9abcf5d31180f7"
+      sha256: "262e076d13b15348cff8a268da62c0b656dfff6b5254ceb93792e63481349682"
     - path: resources/service-map/v1.json
-      sha256: "37ebd623d4e862057e20425c7e81c0dc4d64a59e7e06a0ff6c863aca37c96f12"
+      sha256: "ed65549ffc30d47b078a04eaae4a2559d3c13c14f2c7872bb4fbbecb790835d7"
   intentionally_excluded:
     - "DoctrineTransactionManager stays in App; it owns the DBAL connection and the nesting policy"
     - "DoctrineTransactionState stays in App; it reads the DBAL connection"
@@ -322,9 +322,9 @@ documentation:
   examples:
     - examples/typed-consumer.php
     - examples/README.md
-  changelog_record: "CHANGELOG.md ## 0.1.0"
+  changelog_record: "CHANGELOG.md ## 0.1.1"
 release_expectations:
-  version_policy: "SemVer, exact pins while pre-1.0; the newest CHANGELOG.md heading (## 0.1.0) is the release record"
+  version_policy: "SemVer, exact pins while pre-1.0; the newest CHANGELOG.md heading (## 0.1.1) is the release record"
   expected_artifact_types:
     - "Composer dist archive of the tag release-on-record creates from the changelog heading, then Packagist"
   required_checks:
@@ -772,3 +772,35 @@ missing `MIGRATION-HANDOFF.md` by design (D7). The three manifests and this fron
 the Kumwe App governance schemas, and the App's `PackageManifests` reader accepts the package as
 `v2-manifested`. A gitleaks history scan could not run locally (no Docker); the tree carries no
 configuration or credential material, and `composer audit --abandoned=fail` runs in CI.
+
+## September 2026 extraction audit follow-up
+
+This follow-up is prepared in [PR #2](https://github.com/kumwe/transaction/pull/2), with the release record
+`CHANGELOG.md ## 0.1.1`. The source baseline, original extraction inventory and historical evidence
+above remain provenance for the original work; this section records the successor's reviewed changes.
+The front-matter target and public-manifest digests describe this successor, not the original PR.
+
+The two contract source paths and the original App test double have no changes between the extraction
+baseline `6f9e42cb59a84ba3ca523a70475cf4d7263c68e7` and the inspected App commit
+`960ce8ec00cf724a7cae03e5ba09c4852c9ab54e`. Package production source is unchanged in this correction.
+The test double remains explicitly scoped consumer test support, as decided in original handoff D1;
+it must never be bound in a production container.
+
+The package still has no runtime Composer dependency beyond PHP, no provider and no host implementation.
+The improved consumer gate installs the exact built ZIP as a dependency of an otherwise empty Composer
+project, verifies its installed archive, and exercises its shipped smoke and example exclusively through
+the consumer's authoritative autoloader. Packagist is disabled for that dependency-free consumer.
+The release workflow now uses one tested parser for pushed and tagged changelogs, including Unreleased.
+Malformed headings fail closed; the complete check command also includes security audit.
+
+App adoption remains a separate task after a human merge, automated publication and independent external
+release attestation for this successor. The existing file-specific consumer, removal and retained-test
+instructions above remain in force. No release identity, archive digest, database result or completed
+roadmap objective is claimed by this embedded record.
+
+Follow-up verification used PHP 8.5.10 with Composer 2.10.3 and no platform bypass: strict coding standards,
+PHPStan level max with strict/deprecation rules, package tests and the real ZIP dependency consumer passed.
+Observed results: 30 tests and 222 assertions; a 20-file installed archive with 3 public symbols.
+The release parser passed twelve cases. Local security audit could not reach the advisory endpoint on one
+attempt; GitHub Actions ran the audit successfully on the initial draft, and the final PR workflow reruns
+the full gate. Its check result is external to this embedded handoff and must be green before review-ready.

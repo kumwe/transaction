@@ -172,10 +172,8 @@ $consumerMetadata = [
     ],
     'config' => ['allow-plugins' => false],
 ];
-if (file_put_contents(
-    $consumer . '/composer.json',
-    json_encode($consumerMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n",
-) === false) {
+$consumerBytes = json_encode($consumerMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+if (file_put_contents($consumer . '/composer.json', $consumerBytes . "\n") === false) {
     consumerFail('the fresh consumer manifest cannot be written.', $workspace);
 }
 
