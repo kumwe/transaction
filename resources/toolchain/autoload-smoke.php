@@ -14,7 +14,9 @@
 declare(strict_types=1);
 
 $root = dirname(__DIR__, 2);
-$autoload = $root . '/vendor/autoload.php';
+/** @var list<string> $arguments */
+$arguments = $_SERVER['argv'] ?? [];
+$autoload = $arguments[1] ?? $root . '/vendor/autoload.php';
 $manifestPath = $root . '/resources/public-api/v1.json';
 
 if (!is_file($autoload)) {

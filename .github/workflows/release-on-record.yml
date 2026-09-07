@@ -83,19 +83,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          first="$(grep -m 1 -E '^## ' CHANGELOG.md || true)"
-          if [ "$first" = "## Unreleased" ] || [ "$first" = "## [Unreleased]" ]; then
-            first="$(grep -E '^## ' CHANGELOG.md | sed -n 2p)"
-          fi
-          if [ -z "$first" ]; then
+          version="$(bash tools/read-release-record.sh < CHANGELOG.md)"
+          if [ -z "$version" ]; then
             echo "::notice::CHANGELOG.md records no released version yet; nothing to release."
             echo "version=" >> "$GITHUB_OUTPUT"
             exit 0
-          fi
-          version="$(sed -nE 's/^## \[?([0-9]+\.[0-9]+\.[0-9]+)\]?( .*)?$/\1/p' <<<"$first")"
-          if [ -z "$version" ]; then
-            echo "::error::The newest changelog heading does not parse as a release record: $first"
-            exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
@@ -147,8 +139,7 @@ jobs:
               echo "::error::Tag v$VERSION points outside the pushed main history: $tag_sha."
               exit 1
             fi
-            tagged_heading="$(git show "$tag_sha:CHANGELOG.md" | grep -m 1 -E '^## ')"
-            tagged_version="$(sed -nE 's/^## \[?([0-9]+\.[0-9]+\.[0-9]+)\]?( .*)?$/\1/p' <<<"$tagged_heading")"
+            tagged_version="$(git show "$tag_sha:CHANGELOG.md" | bash tools/read-release-record.sh)"
             if [ "$tagged_version" != "$VERSION" ]; then
               echo "::error::Tag v$VERSION targets a commit whose newest release record is $tagged_version."
               exit 1

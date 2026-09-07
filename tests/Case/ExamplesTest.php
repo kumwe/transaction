@@ -14,6 +14,24 @@ use Kumwe\Transaction\Tests\TestCase;
 final class ExamplesTest extends TestCase
 {
     /**
+     * An explicit missing consumer autoloader must fail instead of silently loading the source checkout.
+     *
+     * @return  void
+     *
+     * @since   0.1.1
+     */
+    public function testAnExplicitMissingConsumerAutoloaderFailsClosed(): void
+    {
+        $missing = $this->root() . '/tests/nonexistent-consumer-autoload.php';
+        $example = $this->runScript(['examples/typed-consumer.php', $missing]);
+        $smoke = $this->runScript(['resources/toolchain/autoload-smoke.php', $missing]);
+
+        $this->assertSame(1, $example['status'], 'The example must not fall back to its source loader.');
+        $this->assertSame(1, $smoke['status'], 'The smoke must require the specified consumer autoloader.');
+        $this->assertStringContains('autoloader is missing', $example['output'], 'The missing consumer is reported.');
+    }
+
+    /**
      * The typed consumer runs against the test double with the exact output its README describes.
      *
      * @return  void

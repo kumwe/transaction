@@ -4,8 +4,8 @@
  * Build the consumer archive from this checkout and prove it installs and runs with no development state.
  *
  * This is the release gate a package checkout cannot fake: the archive Composer would publish is built,
- * extracted, held to the reviewed file set, validated, installed with `--no-dev --classmap-authoritative`
- * into its own directory, and then exercised through the shipped autoload smoke and the shipped example —
+ * extracted, held to the reviewed file set, then installed as a dependency in a fresh consumer with
+ * `--no-dev --classmap-authoritative`, and exercised using only that consumer's Composer autoloader —
  * so a consumer artifact that needs a test fixture, a path repository, a development package or an
  * undeclared dependency fails here rather than at adoption.
  *
@@ -137,41 +137,79 @@ if (!is_file($package . '/composer.json')) {
 }
 
 consumerRun([PHP_BINARY, $root . '/tools/verify-archive.php', $package], $workspace);
-$fileCount = 0;
-$iterator = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($package, FilesystemIterator::SKIP_DOTS),
-);
-foreach ($iterator as $entry) {
-    if ($entry instanceof SplFileInfo && $entry->isFile()) {
-        $fileCount++;
-    }
-}
 consumerRun(['composer', '--working-dir=' . $package, 'validate', '--strict'], $workspace);
+
+$metadataBytes = file_get_contents($package . '/composer.json');
+$manifestBytes = file_get_contents($package . '/resources/public-api/v1.json');
+$metadata = is_string($metadataBytes) ? json_decode($metadataBytes, true) : null;
+$manifest = is_string($manifestBytes) ? json_decode($manifestBytes, true) : null;
+$release = is_array($manifest) ? ($manifest['release'] ?? null) : null;
+if (
+    !is_array($metadata)
+    || !is_array($manifest)
+    || !is_string($release)
+    || preg_match('/^[0-9]+\.[0-9]+\.[0-9]+$/D', $release) !== 1
+) {
+    consumerFail('the archived package metadata or release record cannot be read.', $workspace);
+}
+
+// The package repository points at the exact built ZIP; no source checkout or path repository is reachable.
+// Version metadata describes this local candidate and does not mutate the archive or publish a release.
+$metadata['version'] = $release;
+$metadata['dist'] = ['type' => 'zip', 'url' => 'file://' . $archive, 'shasum' => sha1_file($archive)];
+$consumer = $workspace . '/consumer';
+if (!mkdir($consumer)) {
+    consumerFail('the fresh consumer directory cannot be created.', $workspace);
+}
+$consumerMetadata = [
+    'name' => 'kumwe/clean-consumer',
+    'description' => 'Isolated verification of the built package archive.',
+    'license' => 'proprietary',
+    'require' => ['kumwe/transaction' => $release],
+    'repositories' => [
+        ['type' => 'package', 'package' => $metadata],
+        ['packagist.org' => false],
+    ],
+    'config' => ['allow-plugins' => false],
+];
+if (file_put_contents(
+    $consumer . '/composer.json',
+    json_encode($consumerMetadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n",
+) === false) {
+    consumerFail('the fresh consumer manifest cannot be written.', $workspace);
+}
+
 consumerRun(
     [
         'composer',
-        '--working-dir=' . $package,
+        '--working-dir=' . $consumer,
         'install',
         '--no-interaction',
         '--no-progress',
         '--no-dev',
+        '--no-plugins',
+        '--no-scripts',
         '--classmap-authoritative',
         ...$extra,
     ],
     $workspace,
 );
+$installed = $consumer . '/vendor/kumwe/transaction';
+consumerRun([PHP_BINARY, $root . '/tools/verify-archive.php', $installed], $workspace);
 foreach (['phpstan', 'squizlabs'] as $developmentVendor) {
-    if (is_dir($package . '/vendor/' . $developmentVendor)) {
+    if (is_dir($consumer . '/vendor/' . $developmentVendor)) {
         consumerFail('the no-dev install still contains vendor/' . $developmentVendor . '.', $workspace);
     }
 }
-consumerRun(['composer', '--working-dir=' . $package, 'autoload:smoke'], $workspace);
-consumerRun(['composer', '--working-dir=' . $package, 'examples'], $workspace);
+if (is_dir($installed . '/vendor')) {
+    consumerFail('the dependency must use the consumer autoloader, not its own vendor tree.', $workspace);
+}
+$autoload = $consumer . '/vendor/autoload.php';
+consumerRun([PHP_BINARY, $installed . '/resources/toolchain/autoload-smoke.php', $autoload], $workspace);
+consumerRun([PHP_BINARY, $installed . '/examples/typed-consumer.php', $autoload], $workspace);
 
-$classmap = require $package . '/vendor/composer/autoload_classmap.php';
-$manifestBytes = file_get_contents($package . '/resources/public-api/v1.json');
-$manifest = is_string($manifestBytes) ? json_decode($manifestBytes, true) : null;
-$symbols = is_array($manifest) && is_array($manifest['symbols'] ?? null) ? $manifest['symbols'] : [];
+$classmap = require $consumer . '/vendor/composer/autoload_classmap.php';
+$symbols = is_array($manifest['symbols'] ?? null) ? $manifest['symbols'] : [];
 if (!is_array($classmap) || $symbols === []) {
     consumerFail('the installed classmap or the shipped manifest cannot be read.', $workspace);
 }
@@ -180,11 +218,29 @@ foreach (array_keys($symbols) as $symbol) {
         consumerFail('the authoritative classmap does not list ' . $symbol . '.', $workspace);
     }
 }
+foreach (array_keys($classmap) as $symbol) {
+    if (
+        !is_string($symbol)
+        || str_starts_with($symbol, 'Kumwe\\App\\')
+        || str_starts_with($symbol, 'Kumwe\\Transaction\\Tests\\')
+    ) {
+        consumerFail('the consumer classmap contains application or development state.', $workspace);
+    }
+}
 
+$fileCount = 0;
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($installed, FilesystemIterator::SKIP_DOTS),
+);
+foreach ($iterator as $entry) {
+    if ($entry instanceof SplFileInfo && $entry->isFile()) {
+        $fileCount++;
+    }
+}
 consumerRemove($workspace);
 
 echo sprintf(
-    "Clean consumer verified: a %d-file archive installed without development dependencies, "
+    "Clean consumer verified: a %d-file archive installed as a dependency without development dependencies, "
         . "its %d public symbols in the authoritative classmap, smoke and example green.\n",
     $fileCount,
     count($symbols),
