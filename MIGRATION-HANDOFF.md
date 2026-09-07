@@ -804,3 +804,10 @@ Observed results: 30 tests and 222 assertions; a 20-file installed archive with 
 The release parser passed twelve cases. Local security audit could not reach the advisory endpoint on one
 attempt; GitHub Actions ran the audit successfully on the initial draft, and the final PR workflow reruns
 the full gate. Its check result is external to this embedded handoff and must be green before review-ready.
+
+## Enforced package test ownership
+
+Portable behavior, boundary and conformance evidence is maintained in `tests/ownership.json`,
+validated against the public API and actual test-runner discovery by `composer test:ownership`.
+See `docs/test-ownership.md` for the future-change rule and the precise host boundary.
+This follow-up changes package tests/tooling only; it does not authorize early App test deletion.
