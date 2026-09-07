@@ -47,7 +47,7 @@ target:
   repository: https://github.com/kumwe/transaction
   artifact_identity: "kumwe/transaction (Composer library)"
   canonical_namespace_or_abi: Kumwe\Transaction
-  branch: fix/extraction-audit-20260907
+  branch: fix/unified-package-release
   pull_request: "https://github.com/kumwe/transaction/pull/2"
 ownership:
   responsibility: "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view."
@@ -62,11 +62,11 @@ ownership:
   next_consumer: kumwe/app
   public_manifests:
     - path: resources/public-api/v1.json
-      sha256: "3c16bf6d850b2af58b5537bdb1ebd97d753654a0a09b2fa0ba8d1a31d44e477a"
+      sha256: "f9589717354cc969ecb87e18d27c3e7f9e501f551bce80cadb698c3989cf2b75"
     - path: resources/capabilities/v1.json
-      sha256: "262e076d13b15348cff8a268da62c0b656dfff6b5254ceb93792e63481349682"
+      sha256: "4e3fc6c4f014183eafad06b39e5c34a10c5e889c305ae09836f813d67cf5795c"
     - path: resources/service-map/v1.json
-      sha256: "ed65549ffc30d47b078a04eaae4a2559d3c13c14f2c7872bb4fbbecb790835d7"
+      sha256: "ec72f2fbda46e326380795664c62c4d7cf38ec557c7e2a9bac40a905ee62d5f5"
   intentionally_excluded:
     - "DoctrineTransactionManager stays in App; it owns the DBAL connection and the nesting policy"
     - "DoctrineTransactionState stays in App; it reads the DBAL connection"
@@ -322,9 +322,9 @@ documentation:
   examples:
     - examples/typed-consumer.php
     - examples/README.md
-  changelog_record: "CHANGELOG.md ## 0.1.1"
+  changelog_record: "CHANGELOG.md ## 0.1.2"
 release_expectations:
-  version_policy: "SemVer, exact pins while pre-1.0; the newest CHANGELOG.md heading (## 0.1.1) is the release record"
+  version_policy: "SemVer, exact pins while pre-1.0; the newest CHANGELOG.md heading (## 0.1.2) is the release record"
   expected_artifact_types:
     - "Composer dist archive of the tag release-on-record creates from the changelog heading, then Packagist"
   required_checks:
@@ -811,3 +811,17 @@ Portable behavior, boundary and conformance evidence is maintained in `tests/own
 validated against the public API and actual test-runner discovery by `composer test:ownership`.
 See `docs/test-ownership.md` for the future-change rule and the precise host boundary.
 This follow-up changes package tests/tooling only; it does not authorize early App test deletion.
+
+## Release automation successor candidate: 0.1.2
+
+`CHANGELOG.md ## 0.1.2` records the candidate prepared by this change. It is not a published release or a
+release attestation. The three public manifests and their front-matter digests describe this candidate;
+the extraction inventory, App baseline and earlier follow-up evidence remain historical provenance.
+
+Release verification uses the commit supplied by the push event after rebasing onto the default branch.
+The release candidate does not embed a pull-request head identity as a test prerequisite. Publication
+prerequisites are checked before changes to tags or releases; previously published versions are preserved.
+The runtime source, public symbols, host responsibilities and package test ownership are unchanged.
+
+App adoption still requires successful publication and independent external attestation of this successor.
+No archive digest, published tag identity or successful hosted workflow result is asserted by this record.

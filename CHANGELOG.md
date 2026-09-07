@@ -4,6 +4,14 @@ Delivered package changes, newest first. A change is recorded here only after it
 clean clone. The newest `## X.Y.Z` heading is the release record: a merge to `main` that carries it is the
 release, published by the `Release on record` workflow ([`docs/releasing.md`](docs/releasing.md)).
 
+## 0.1.2
+
+- **Consistent release automation.** Resolve release identity from the tested push commit after a rebase,
+  verify release prerequisites before publication, and apply the same release checks in pull requests
+  and after merge. Existing published releases are preserved; this record prepares a successor release.
+- **Current consumer metadata.** Synchronize the three public manifests and migration handoff with this
+  release candidate. Runtime behavior and the public API are unchanged.
+
 ## 0.1.1
 
 - **Prove the archive as a dependency.** Install the actual built ZIP into a new no-dev Composer consumer,

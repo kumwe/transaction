@@ -1,7 +1,7 @@
 {
     "schema": "kumwe-package-public-api/v1",
     "package": "kumwe/transaction",
-    "release": "0.1.1",
+    "release": "0.1.2",
     "namespace": "Kumwe\\Transaction\\",
     "symbols": {
         "Kumwe\\Transaction\\Contract\\TransactionManager": {

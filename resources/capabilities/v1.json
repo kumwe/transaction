@@ -1,7 +1,7 @@
 {
   "schema": "kumwe-package-capabilities/v1",
   "package": "kumwe/transaction",
-  "release": "0.1.1",
+  "release": "0.1.2",
   "namespace": "Kumwe\\Transaction\\",
   "responsibility": "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view.",
   "non_responsibilities": [
