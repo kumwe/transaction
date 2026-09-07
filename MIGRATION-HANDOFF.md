@@ -48,7 +48,7 @@ target:
   artifact_identity: "kumwe/transaction (Composer library)"
   canonical_namespace_or_abi: Kumwe\Transaction
   branch: fix/unified-package-release
-  pull_request: "https://github.com/kumwe/transaction/pull/2"
+  pull_request: "https://github.com/kumwe/transaction/pull/4"
 ownership:
   responsibility: "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view."
   non_responsibilities:
