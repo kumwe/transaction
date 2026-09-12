@@ -1,7 +1,7 @@
 # Package maintenance
 
 Read docs/package-release-standard.md before changing CI, release automation, package
-metadata or extraction handoff evidence. The reusable CI gate must be identical for
+metadata or package release evidence. The reusable CI gate must be identical for
 PRs and post-rebase default-branch releases. Never pin this PR's SHA as a future
 release identity, bypass package tests or replace existing tags/releases.
 

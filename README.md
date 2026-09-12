@@ -1,5 +1,10 @@
 # Kumwe Transaction
 
+[![Latest version][version-badge]][package]
+[![Transaction CI][ci-badge]][ci]
+[![PHP requirement][php-badge]][package]
+[![License][license-badge]](LICENSE)
+
 **The storage-neutral transaction port. Services type against the contract; the host binds its adapter.**
 
 Kumwe Transaction defines the transaction boundary an application service in the
@@ -31,7 +36,7 @@ It does not own, and will refuse:
 ## Installation and supported platforms
 
 ```bash
-composer require kumwe/transaction
+composer require kumwe/transaction:0.1.2
 ```
 
 PHP `^8.5` and nothing else: the runtime requirement is `php` alone, with no extension and no Composer
@@ -141,15 +146,18 @@ Both interfaces are the extension points: a host implements them once per connec
 consumer that needs a scoped in-memory double for its own tests writes one against the contract; the
 shipped double is deliberately minimal and stateless.
 
-## Migration from Kumwe App
+## Contract with Kumwe Core
 
-`Kumwe\App\Application\Persistence\TransactionManager` becomes
-`Kumwe\Transaction\Contract\TransactionManager` and `Kumwe\App\Application\Persistence\TransactionState`
-becomes `Kumwe\Transaction\Contract\TransactionState`, behaviour unchanged. The App's test support
-`Kumwe\App\Tests\Support\ImmediateTransactionManager` becomes
-`Kumwe\Transaction\Testing\ImmediateTransactionManager`. `DoctrineTransactionManager`,
-`DoctrineTransactionState`, the kernel bindings and every database test stay in the App. The complete
-adoption record, with file-level Phase 2 instructions, is `MIGRATION-HANDOFF.md` in this repository.
+Kumwe Core consumes the canonical package interfaces and owns `DoctrineTransactionManager`,
+`DoctrineTransactionState`, container bindings, connection lifetime and database integration tests.
+It proves nested-scope behavior, rollback residue, commit durability, retry policy and audit/outbox
+atomicity against every supported database. Package tests verify the portable contracts and test double;
+they do not establish a host adapter's durability.
+
+The [integration guide](docs/integration.md) defines the binding and verification requirements. The
+[release contract record](docs/release-record.md) carries the manifest digests, source provenance and
+consumer compatibility requirements used in independent release verification. Published package versions
+and CI results do not by themselves establish that Core has adopted a version.
 
 ## Testing and clean-consumer commands
 
@@ -169,3 +177,10 @@ Releases are on the record: the newest `## X.Y.Z` heading in [`CHANGELOG.md`](CH
 a merge to `main` publishes, as [`docs/releasing.md`](docs/releasing.md) describes. Compatibility follows
 semantic versioning with exact consumer pins while pre-1.0. Security policy and scope are in
 [`docs/security.md`](docs/security.md). Licensed under the [Apache License, Version 2.0](LICENSE).
+
+[version-badge]: https://img.shields.io/packagist/v/kumwe/transaction
+[package]: https://packagist.org/packages/kumwe/transaction
+[ci-badge]: https://github.com/kumwe/transaction/actions/workflows/ci.yml/badge.svg?branch=main
+[ci]: https://github.com/kumwe/transaction/actions/workflows/ci.yml
+[php-badge]: https://img.shields.io/packagist/dependency-v/kumwe/transaction/php
+[license-badge]: https://img.shields.io/packagist/l/kumwe/transaction

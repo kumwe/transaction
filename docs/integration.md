@@ -8,7 +8,7 @@ this package.
 ## 1. Install and pin
 
 ```bash
-composer require kumwe/transaction:0.1.0
+composer require kumwe/transaction:0.1.2
 ```
 
 While the package is pre-1.0 the host pins an exact version, never a range, and a re-pin is a deliberate,

@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-# The Kumwe App adoption gate reads CHARTER.md, README.md, CHANGELOG.md, MIGRATION-HANDOFF.md, docs/,
+# Consumer verification reads CHARTER.md, README.md, CHANGELOG.md, docs/release-record.md, docs/,
 # resources/ and src/ from the release archive, and the clean-consumer gate runs examples/ from it; none of
 # them may be export-ignored. Only development state stays out of the archive.
 /.editorconfig export-ignore

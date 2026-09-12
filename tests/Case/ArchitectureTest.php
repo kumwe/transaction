@@ -28,7 +28,7 @@ final class ArchitectureTest extends TestCase
         'CHANGELOG.md',
         'CHARTER.md',
         'LICENSE',
-        'MIGRATION-HANDOFF.md',
+        'docs/release-record.md',
         'README.md',
         'composer.json',
         'docs',
