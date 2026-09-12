@@ -209,7 +209,7 @@ consumer_contract:
     - Run Core database integration tests against MariaDB, MySQL and PostgreSQL.
 ---
 
-# Package contract
+## Package contract
 
 This record describes the portable contract of `kumwe/transaction`. It does not report Core adoption
 or claim a completed host integration. Historical source identifiers and namespace mappings in the
