@@ -26,8 +26,7 @@ target:
 ownership:
   responsibility: "Storage-neutral transaction port: atomic scopes, settlement hooks and an open-transaction view."
   non_responsibilities:
-    - "Any transaction implementation: driver adapters, connections, savepoints and isolation levels stay in
-      the host."
+    - "Any transaction implementation: driver adapters, connections, savepoints and isolation levels stay in the host."
     - Nested-transaction, retry, deadlock and timeout policy.
     - Logging, audit, outbox and event coordination around a transaction.
     - "Container registration: the host binds its adapter to the contract identifiers; there is no provider."
@@ -46,10 +45,8 @@ ownership:
     - DoctrineTransactionManager stays in App; it owns the DBAL connection and the nesting policy
     - DoctrineTransactionState stays in App; it reads the DBAL connection
     - The two share() bindings in src/Kernel/ContainerFactory.php stay in App; composition is host authority
-    - The App's inline scope-recording test doubles stay in App; they are test-local probes, not package
-      behaviour
-    - Retry, deadlock, timeout, logging, audit and outbox coordination stay in App; they are policy around the
-      port
+    - The App's inline scope-recording test doubles stay in App; they are test-local probes, not package behaviour
+    - Retry, deadlock, timeout, logging, audit and outbox coordination stay in App; they are policy around the port
 framework_php:
   composer_package: kumwe/transaction
   canonical_namespace: Kumwe\Transaction
@@ -104,7 +101,7 @@ framework_php:
     configuration_and_di:
       - src/Kernel/ContainerFactory.php
     reflection_and_string_references: []
-    fixtures_and_examples: &a1
+    fixtures_and_examples:
       - tests/Integration/Persistence/DoctrineTransactionManagerTest.php
       - tests/Integration/Persistence/TransactionBoundaryEngineIntegrationTest.php
       - tests/Unit/Infrastructure/Persistence/DoctrineTransactionStateTest.php
@@ -116,10 +113,8 @@ framework_php:
     factories: []
     aliases: []
     service_lifetimes:
-      - "Kumwe\\Transaction\\Contract\\TransactionManager: request-supplied (bound to one connection by the
-        host)"
-      - "Kumwe\\Transaction\\Contract\\TransactionState: request-supplied (bound to one connection by the
-        host)"
+      - "Kumwe\\Transaction\\Contract\\TransactionManager: request-supplied (bound to one connection by the host)"
+      - "Kumwe\\Transaction\\Contract\\TransactionState: request-supplied (bound to one connection by the host)"
     configuration_keys: []
     provider_absence_reason: "Contracts only, no runtime service: the host binds its adapter to the contract FQCNs."
 native_cpp: null
@@ -133,10 +128,13 @@ tests:
     - tests/Case/ArchitectureTest.php
     - tests/Case/ExamplesTest.php
     - tests/Case/DocumentationTest.php
-  remain_in_app_or_consumer: *a1
+  remain_in_app_or_consumer:
+    - tests/Integration/Persistence/DoctrineTransactionManagerTest.php
+    - tests/Integration/Persistence/TransactionBoundaryEngineIntegrationTest.php
+    - tests/Unit/Infrastructure/Persistence/DoctrineTransactionStateTest.php
+    - tests/Architecture/TransactionSeamBoundaryTest.php
   split_tests:
-    - Package tests own portable interface shapes and test-double behavior; Core retains adapter and
-      composition tests.
+    - Package tests own portable interface shapes and test-double behavior; Core retains adapter and composition tests.
   prohibited_duplicates:
     - Host copies of the canonical interfaces or package test double.
   corpora: []
@@ -151,8 +149,7 @@ documentation:
     - examples/README.md
   changelog_record: "CHANGELOG.md ## 0.1.2"
 release_expectations:
-  version_policy: Semantic versioning; exact consumer pins while pre-1.0. The newest stable changelog record
-    selects publication.
+  version_policy: SemVer; exact pre-1.0 pins. The latest stable changelog record selects publication.
   expected_artifact_types:
     - Composer dist archive from the published immutable semantic version tag.
   required_checks:
@@ -165,26 +162,21 @@ release_expectations:
 governance:
   completion_claim: false
 decisions:
-  - The host binds its adapter directly to canonical interface names; no provider, alias or fallback is
-    supplied.
+  - The host binds its adapter directly to canonical interface names; no provider, alias or fallback is supplied.
   - ImmediateTransactionManager is explicitly test-scoped and must never be bound in production.
   - The package owns contract semantics; the host owns connection policy and persistence behavior.
-  - Independent evidence identifies the final released artifact; this embedded record does not attest to
-    itself.
+  - Independent evidence identifies the final released artifact; this embedded record does not attest to itself.
 blockers: []
 consumer_contract:
   permitted_only_when:
-    - The exact stable release has been published and independently verified from its source and artifact
-      identities.
+    - The exact stable release has been published and independently verified from its source and artifact identities.
     - Core adapter, composition and supported-database tests pass against the selected exact package version.
   consumer_repository: kumwe/app
-  dependency_or_native_change: >-
-    Pin the independently verified kumwe/transaction version exactly; regenerate composer.lock with Composer.
+  dependency_or_native_change: Pin the exact independently verified version; regenerate composer.lock with Composer.
   namespace_or_api_replacements:
     - Kumwe\App\Application\Persistence\TransactionManager -> Kumwe\Transaction\Contract\TransactionManager
     - Kumwe\App\Application\Persistence\TransactionState -> Kumwe\Transaction\Contract\TransactionState
-    - Kumwe\App\Tests\Support\ImmediateTransactionManager ->
-      Kumwe\Transaction\Testing\ImmediateTransactionManager
+    - Kumwe\App\Tests\Support\ImmediateTransactionManager -> Kumwe\Transaction\Testing\ImmediateTransactionManager
   files_to_update:
     - composer.json
     - composer.lock
@@ -194,10 +186,13 @@ consumer_contract:
     - src/Application/Persistence/TransactionState.php
     - tests/Support/ImmediateTransactionManager.php
   tests_to_remove: []
-  tests_to_retain_or_add: *a1
+  tests_to_retain_or_add:
+    - tests/Integration/Persistence/DoctrineTransactionManagerTest.php
+    - tests/Integration/Persistence/TransactionBoundaryEngineIntegrationTest.php
+    - tests/Unit/Infrastructure/Persistence/DoctrineTransactionStateTest.php
+    - tests/Architecture/TransactionSeamBoundaryTest.php
   di_or_provisioning_changes:
-    - keep both share() bindings in src/Kernel/ContainerFactory.php keyed by the package FQCNs; no alias or
-      fallback
+    - keep both share() bindings in src/Kernel/ContainerFactory.php keyed by the package FQCNs; no alias or fallback
     - "no ConfigProvider to register: the package ships none"
   capability_index_changes:
     - Track the installed public API, capabilities, service map and release contract record digests in Core.
@@ -208,7 +203,6 @@ consumer_contract:
     - composer test:unit
     - Run Core database integration tests against MariaDB, MySQL and PostgreSQL.
 ---
-
 ## Package contract
 
 This record describes the portable contract of `kumwe/transaction`. It does not report Core adoption
