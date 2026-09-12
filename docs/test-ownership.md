@@ -26,10 +26,12 @@ The exact per-file adoption and split instructions are recorded in tests/ownersh
 implementation test only when its old production implementation is removed during verified adoption. App retains
 its own integration assertions and does not execute package test files from vendor.
 
-## Release integrity prerequisite
+## Release integrity
 
-The release workflow now refuses all tag/publication mutations unless main is protected and refuses an existing or
-newly published release unless its exact version is immutable, published, stable and non-draft. The 31
-package-owned release-integrity fixtures run in the complete check lane. A maintainer must protect main and enable
-immutable releases before recording the next release; these changes do not modify repository settings, existing
-tags or historical release integrity.
+The package-owned release-integrity fixtures run in the complete check lane. Tags and released artifacts are
+never moved, replaced or deleted; publication verifies the exact stable version and its source identity.
+Independent consumer verification remains separate from publication.
+
+Branch protection and GitHub's immutable-release setting are optional repository hardening, as documented in
+[the package release standard](package-release-standard.md). Optional platform settings do not relax the
+artifact identity contract or authorize replacement of an existing release.

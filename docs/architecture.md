@@ -18,19 +18,17 @@ crossing, a driver, a host, a container or a framework name.
 
 Rules that keep the boundary honest:
 
-1. **The extracted behaviour is the API.** This package is a drop-in replacement for a port Kumwe App
-   already declared and every App consumer already composes over. A public shape here matches the shape
-   the App published — the same method names, the same `callable` parameter, the same `mixed`/`void`
-   returns, the same `@template T` contract, the same documented semantics. An improvement that moves
-   behaviour is new work with a new version, never part of extraction.
+1. **The documented behaviour is the API.** Method names, `callable` parameters, `mixed`/`void` returns,
+   `@template T` contracts and transaction semantics are compatibility commitments. Changes to those
+   commitments require review, a versioned release and consumer verification.
 2. **A port carries no implementation.** No class in `Contract` has a body; no class in the package opens,
    commits or rolls back anything. The only concrete class is the test double, and its whole behaviour is
    "run it now".
 3. **Nothing is selected at runtime.** No `class_exists()`, `extension_loaded()`, `class_alias()` or
    fallback of any kind appears in `src/`; the architecture gate refuses them.
 4. **Determinism.** The package reads no clock, no environment and no randomness.
-5. **One owner, one name.** `Kumwe\Transaction\` is the only namespace. No historical App name survives
-   anywhere in the tree, and the suite refuses one in the manifests and the source.
+5. **One owner, one name.** `Kumwe\Transaction\` is the only runtime namespace. The suite refuses
+   historical App names in the manifests and source; compatibility provenance remains in the release record.
 
 ## Code
 
@@ -106,5 +104,5 @@ release re-proves the same lane on the merged commit before a tag exists.
 The public API manifest is the compatibility pin: `composer manifests` regenerates it from reflection and
 refuses any difference. A reviewed change records the new surface with `composer manifests:record` and a
 changelog entry; routine changes never rewrite the evidence to make the gate green. A change a consumer
-must act on is a new major. Newer portable behaviour discovered in a consumer after extraction is routed
-here as a successor release before that consumer adopts it; see `MIGRATION-HANDOFF.md`.
+must act on is a new major. Portable behaviour needed by a consumer is implemented here and published
+as a successor release before the consumer adopts it; see [the integration guide](integration.md).

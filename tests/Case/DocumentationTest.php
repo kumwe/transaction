@@ -27,6 +27,7 @@ final class DocumentationTest extends TestCase
         'docs/integration.md',
         'docs/public-api.md',
         'docs/releasing.md',
+        'docs/release-record.md',
         'docs/security.md',
         'examples/README.md',
     ];
@@ -46,7 +47,7 @@ final class DocumentationTest extends TestCase
         '## Public surface',
         '## Guarantees',
         '## Extension and replacement points',
-        '## Migration from Kumwe App',
+        '## Contract with Kumwe Core',
         '## Testing and clean-consumer commands',
         '## Release, compatibility, security and license',
     ];
@@ -60,11 +61,7 @@ final class DocumentationTest extends TestCase
      */
     public function testEveryRelativeLinkResolves(): void
     {
-        $documents = self::DOCUMENTS;
-        if (is_file($this->root() . '/MIGRATION-HANDOFF.md')) {
-            $documents[] = 'MIGRATION-HANDOFF.md';
-        }
-        foreach ($documents as $document) {
+        foreach (self::DOCUMENTS as $document) {
             preg_match_all('/\]\(([^)\s]+)\)/', $this->read($document), $matches);
             foreach ($matches[1] as $target) {
                 if (preg_match('/^(https?:|mailto:|#)/', $target) === 1) {

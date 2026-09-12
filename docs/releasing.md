@@ -35,9 +35,9 @@ reflection and refuses any difference. A reviewed change records the new surface
 
 The Composer archive is the release artifact. `.gitattributes` keeps development state out of it and keeps
 in it exactly what a consumer and the Kumwe App adoption gate read: `CHARTER.md`, `README.md`,
-`CHANGELOG.md`, `MIGRATION-HANDOFF.md`, `LICENSE`, `composer.json`, `docs/`, `examples/`, `resources/`
+`CHANGELOG.md`, `LICENSE`, `composer.json`, `docs/` (including `release-record.md`), `examples/`, `resources/`
 and `src/`. `tools/verify-archive.php` holds an extracted archive to that exact file set and refuses a
-stray or a missing file; the archive is not release-ready without the handoff.
+stray or a missing file; the archive must include the current package release contract record.
 
 ## Clean-consumer verification
 
@@ -75,7 +75,7 @@ release, tag and source identity. Publication does not establish `release-verifi
 Before declaring that state or SDK/App adoption, a fresh independent verifier must
 bind the exact published source/tag, archive digest, manifests, registry coordinate,
 license/security and clean-consumer results in an external RELEASE-ATTESTATION.yaml.
-The artifact and handoff must not invent their own final commit, checksum or
+The artifact and release contract record must not invent their own final commit, checksum or
 publication evidence. This attestation is separate from normal publication.
 
 Use the current release workflow on the default branch to retry after correcting
